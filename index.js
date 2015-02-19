@@ -4,7 +4,7 @@ var express = require("express")
   , util = require('util')
   , fs   = require('fs-extra');
 
-var websitePath = "http://services.techatnyu.org/image-upload"
+var websitePath = "http://services.tnyu.org"
   , pathToUploadDirectory = '/uploads/';
 
 app.use("/uploads", express.static(__dirname + pathToUploadDirectory));
@@ -28,9 +28,9 @@ app.post('/upload', function (req, res){
 });
 
 // Show the upload form 
-app.get('/', function (req, res){
+app.get('/simple-form', function (req, res){
   res.writeHead(200, {'Content-Type': 'text/html' });
-  var form = '<form action="/upload" enctype="multipart/form-data" method="post">Add a title: <input name="title" type="text" /><br><br><input multiple="multiple" name="upload" type="file" /><br><br><input type="submit" value="Upload" /></form>';
+  var form = '<form action="/upload" enctype="multipart/form-data" method="post"><input multiple="multiple" name="upload" type="file" /><br><br><input type="submit" value="Upload" /></form>';
   res.end(form); 
 });
 
