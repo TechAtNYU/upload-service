@@ -7,6 +7,7 @@ var express = require("express")
 var websitePath = "http://services.tnyu.org"
   , pathToUploadDirectory = '/uploads/';
 
+console.log(__dirname + pathToUploadDirectory);
 app.use("/uploads", express.static(__dirname + pathToUploadDirectory));
 
 app.post('/upload', function (req, res){
@@ -19,7 +20,7 @@ app.post('/upload', function (req, res){
   form.on('end', function(fields, files) {
     var temporaryPath = this.openedFiles[0].path;
     var setFileName = this.openedFiles[0].name;
-    fs.copy(temporaryPath, pathToUploadDirectory + setFileName, function(err) {
+    fs.copy(temporaryPath, __dirname + pathToUploadDirectory + setFileName, function(err) {
       if (err) {
         console.error(err);
       }
