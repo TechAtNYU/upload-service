@@ -14,7 +14,7 @@ app.post('/upload', function (req, res){
   form.parse(req, function(err, fields, files) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     var filePath = websitePath + files["upload"]["name"]
-    res.end(JSON.stringify({ "filePath": files["upload"]["name"] }));
+    res.end(JSON.stringify({ "filePath": filePath }));
   });
   form.on('end', function(fields, files) {
     var temporaryPath = this.openedFiles[0].path;
