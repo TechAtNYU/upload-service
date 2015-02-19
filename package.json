@@ -1,0 +1,21 @@
+{
+  "name": "upload-image",
+  "version": "0.0.0",
+  "description": "Allows individuals to easily upload images",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Abhi Agarwal",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.12.0",
+    "express": "^4.11.2",
+    "formidable": "^1.0.17",
+    "fs-extra": "^0.16.3",
+    "mime-db": "^1.7.0",
+    "multipart": "^0.1.5",
+    "quickthumb": "0.0.11",
+    "util": "^0.10.3"
+  }
+}
