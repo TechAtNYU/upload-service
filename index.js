@@ -13,7 +13,7 @@ app.post('/upload', function (req, res){
   var form = new formidable.IncomingForm();
   form.parse(req, function(err, fields, files) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    var filePath = websitePath + files["upload"]["name"]
+    var filePath = websitePath + pathToUploadDirectory + files["upload"]["name"]
     res.end(JSON.stringify({ "filePath": filePath }));
   });
   form.on('end', function(fields, files) {
