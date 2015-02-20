@@ -23,3 +23,11 @@ Exists on `http://localhost:8080/simple-form`
 	<input type="submit" value="Upload" />
 </form>
 ```
+
+OR
+
+Through the command-line:
+
+```bash
+curl -X POST -F upload=@(IMAGE_PATH_HERE) services.tnyu.org/upload
+```
