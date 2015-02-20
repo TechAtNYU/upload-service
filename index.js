@@ -6,6 +6,12 @@ var express = require("express")
 
 var websitePath = "http://services.tnyu.org"
   , pathToUploadDirectory = '/uploads/';
+  
+function generateFilePath(uploadName, uploadPath){
+  var extension = uploadName.split(".")[1];
+  var endFilePath = uploadPath.split("/")[2] + "." + extension;
+  return endFilePath
+}
 
 app.use("/uploads", express.static(__dirname + pathToUploadDirectory));
 
@@ -13,16 +19,14 @@ app.post('/upload', function (req, res){
   var form = new formidable.IncomingForm();
   form.parse(req, function(err, fields, files) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    var extension = files["upload"]["name"].split(".")[1];
-    var endFilePath = files["upload"]["path"].split("/")[2] + "." + extension;
+    var endFilePath = generateFilePath(files["upload"]["name"], files["upload"]["path"])
     var filePath = websitePath + pathToUploadDirectory + endFilePath;
     res.end(JSON.stringify({ "filePath": filePath }));
   });
   form.on('end', function() {
     var temporaryPath = this.openedFiles[0].path;
-    var extension = this.openedFiles[0].name.split(".")[1]
-    var filePath = temporaryPath.split("/")[2] + "." + extension;
-    fs.copy(temporaryPath, __dirname + pathToUploadDirectory + filePath, function(err) {
+    var endFilePath = generateFilePath(this.openedFiles[0].name, temporaryPath);
+    fs.copy(temporaryPath, __dirname + pathToUploadDirectory + endFilePath, function(err) {
       if (err) {
         console.error(err);
       }
@@ -30,7 +34,6 @@ app.post('/upload', function (req, res){
   });
 });
 
-// Show the upload form 
 app.get('/simple-form', function (req, res){
   res.writeHead(200, {'Content-Type': 'text/html' });
   var form = '<form action="/upload" enctype="multipart/form-data" method="post"><input multiple="multiple" name="upload" type="file" /><br><br><input type="submit" value="Upload" /></form>';
