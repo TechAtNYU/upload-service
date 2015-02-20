@@ -1,5 +1,6 @@
 # Uploads folder
 uploads
+nohup.out
 
 .DS_Store
 .AppleDouble

@@ -7,20 +7,22 @@ var express = require("express")
 var websitePath = "http://services.tnyu.org"
   , pathToUploadDirectory = '/uploads/';
 
-console.log(__dirname + pathToUploadDirectory);
 app.use("/uploads", express.static(__dirname + pathToUploadDirectory));
 
 app.post('/upload', function (req, res){
   var form = new formidable.IncomingForm();
   form.parse(req, function(err, fields, files) {
     res.writeHead(200, {'Content-Type': 'application/json'});
-    var filePath = websitePath + pathToUploadDirectory + files["upload"]["name"]
+    var extension = files["upload"]["name"].split(".")[1];
+    var endFilePath = files["upload"]["path"].split("/")[2] + "." + extension;
+    var filePath = websitePath + pathToUploadDirectory + endFilePath;
     res.end(JSON.stringify({ "filePath": filePath }));
   });
-  form.on('end', function(fields, files) {
+  form.on('end', function() {
     var temporaryPath = this.openedFiles[0].path;
-    var setFileName = this.openedFiles[0].name;
-    fs.copy(temporaryPath, __dirname + pathToUploadDirectory + setFileName, function(err) {
+    var extension = this.openedFiles[0].name.split(".")[1]
+    var filePath = temporaryPath.split("/")[2] + "." + extension;
+    fs.copy(temporaryPath, __dirname + pathToUploadDirectory + filePath, function(err) {
       if (err) {
         console.error(err);
       }
