@@ -19,7 +19,7 @@ Exists on `http://localhost:8080/simple-form`
 
 ```
 <form action="/upload" enctype="multipart/form-data" method="post">
-	<input multiple="multiple" name="upload" type="file" />
+	<input name="upload" type="file" />
 	<input type="submit" value="Upload" />
 </form>
 ```
