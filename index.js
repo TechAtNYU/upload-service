@@ -6,6 +6,7 @@ var express = require("express")
 var websitePath = "http://services.tnyu.org"
   , pathToUploadDirectory = '/uploads/';
   
+// Function to easily generate a file path
 function generateFilePath(uploadName, uploadPath){
   var extension = uploadName.split(".")[1];
   var endFilePath = uploadPath.split("/")[2] + "." + extension;
