@@ -8,9 +8,10 @@ var websitePath = "http://services.tnyu.org"
   
 // Function to easily generate a file path
 function generateFilePath(uploadName, uploadPath){
+  var folderName = uploadName.split(".")[0];
   var extension = uploadName.split(".")[1];
-  var endFilePath = uploadPath.split("/")[2] + "." + extension;
-  return endFilePath
+  var endFilePath = (uploadPath.split("/")[2]).split("_")[1];
+ return folderName + "_" + endFilePath + "." + extension;
 }
 
 app.use("/uploads", express.static(__dirname + pathToUploadDirectory));
