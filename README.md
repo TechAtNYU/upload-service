@@ -1,5 +1,10 @@
 ### Simple upload image
 
+Google Code:
+
+`gjslint -r index.js`
+`fixjsstyle index.js`
+
 Running:
 
 - `sudo npm install`
