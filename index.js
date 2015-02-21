@@ -40,4 +40,8 @@ app.get('/simple-form', function (req, res){
   res.end(form); 
 });
 
+app.get('/', function (req, res){
+  res.end("Tech@NYU image service"); 
+});
+
 app.listen(8080);
