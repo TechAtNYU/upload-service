@@ -1,7 +1,6 @@
 var express = require("express")
   , app = express()
   , formidable = require('formidable')
-  , util = require('util')
   , fs   = require('fs-extra');
 
 var websitePath = "http://services.tnyu.org"
