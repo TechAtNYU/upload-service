@@ -26,9 +26,7 @@ Exists on `http://localhost:8080/simple-form`
 
 OR
 
-Through the command-line:
-
-Simple way to submit an image through the command-line
+Through the command-line (Simple way to submit an image through the command-line):
 
 ```bash
 curl -X POST -F upload=@(IMAGE_PATH_HERE) services.tnyu.org/upload
