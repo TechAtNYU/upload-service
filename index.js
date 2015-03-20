@@ -19,15 +19,15 @@ function generateFilePath(uploadName, tmpPath) {
   var folderName = uploadName.split('.')[0];
   var extension = uploadName.split('.')[1];
   var splits = tmpPath.split('/');
-  var tmpPathSplit = splits[splits.length-1];
-  return tmpPathSplit + "_" + folderName + '.' + extension;
+  var tmpPathSplit = splits[splits.length - 1];
+  return tmpPathSplit + '_' + folderName + '.' + extension;
 }
 
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-      
+
     // intercept OPTIONS method
     if ('OPTIONS' == req.method) {
       res.send(200);
@@ -37,7 +37,7 @@ app.use(function(req, res, next) {
     }
 });
 
-var uploadFile = function(fileName, toName){
+var uploadFile = function(fileName, toName) {
   var readStream = fs.createReadStream(fileName);
   var writeStream = rackspace.upload({
     container: 'images',
@@ -49,7 +49,7 @@ var uploadFile = function(fileName, toName){
   });
 
   writeStream.on('success', function(file) {
-    console.log("done");
+    console.log('done');
   });
 
   readStream.pipe(writeStream);
