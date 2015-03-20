@@ -4,18 +4,26 @@ var express = require('express');
 var app = express();
 var formidable = require('formidable');
 var fs = require('fs-extra');
-var websitePath = 'http://services.tnyu.org';
-var pathToUploadDirectory = '/uploads/';
+var pkgcloud = require('pkgcloud');
+var websitePath = 'http://images.tnyu.org/';
+
+var rackspace = pkgcloud.storage.createClient({
+  provider: 'rackspace',
+  username: process.env.RackUN,
+  apiKey: process.env.RackAPI,
+  region: 'ORD'
+});
 
 // Function to easily generate a file path
-function generateFilePath(uploadName, uploadPath) {
+function generateFilePath(uploadName, tmpPath) {
   var folderName = uploadName.split('.')[0];
   var extension = uploadName.split('.')[1];
-  var endFilePath = uploadPath.split('/')[2].split('_')[1];
-  return folderName + '_' + endFilePath + '.' + extension;
+  var splits = tmpPath.split('/');
+  var tmpPathSplit = splits[splits.length-1];
+  return tmpPathSplit + "_" + folderName + '.' + extension;
 }
 
-var allowCrossDomain = function(req, res, next) {
+app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -27,17 +35,32 @@ var allowCrossDomain = function(req, res, next) {
     else {
       next();
     }
-};
-app.use(allowCrossDomain);
+});
 
-app.use('/uploads', express.static(__dirname + pathToUploadDirectory));
+var uploadFile = function(fileName, toName){
+  var readStream = fs.createReadStream(fileName);
+  var writeStream = rackspace.upload({
+    container: 'images',
+    remote: toName
+  });
+
+  writeStream.on('error', function(err) {
+    console.log(err);
+  });
+
+  writeStream.on('success', function(file) {
+    console.log("done");
+  });
+
+  readStream.pipe(writeStream);
+};
 
 app.post('/upload', function(req, res) {
   var form = new formidable.IncomingForm();
   form.parse(req, function(err, fields, files) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     var endFilePath = generateFilePath(files.upload.name, files.upload.path);
-    var filePath = websitePath + pathToUploadDirectory + endFilePath;
+    var filePath = websitePath + endFilePath;
     res.end(JSON.stringify({
       'originalName': files.upload.name,
       'filePath': filePath
@@ -46,8 +69,8 @@ app.post('/upload', function(req, res) {
   form.on('end', function() {
     var temporaryPath = this.openedFiles[0].path;
     var endFilePath = generateFilePath(this.openedFiles[0].name, temporaryPath);
-    var pathToMove = __dirname + pathToUploadDirectory + endFilePath;
-    fs.copy(temporaryPath, pathToMove, function(err) {
+    uploadFile(temporaryPath, endFilePath);
+    fs.unlink(temporaryPath, function(err) {
       if (err) {
         console.error(err);
       }

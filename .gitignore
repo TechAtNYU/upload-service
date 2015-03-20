@@ -1,6 +1,8 @@
 # Uploads folder
 uploads
 nohup.out
+run.sh
+sample-images
 
 .DS_Store
 .AppleDouble
