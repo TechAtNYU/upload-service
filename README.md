@@ -1,14 +1,9 @@
 ### Simple upload image
 
-Google Code:
-
-`gjslint -r index.js`
-`fixjsstyle index.js`
-
 Running:
 
 - `sudo npm install`
-- `mkdir uploads`
+- `export RackUN=__`, `export RackAPI=__`, `export RackContainer=__`
 - `node index.js`
 - `http://localhost:8080`
 
@@ -17,13 +12,14 @@ To do:
 - ~~~Store the images in a single directory~~~
 - ~~~Random number / generation of numbers for images.~~~
 - ~~~Return a URL for the image~~~
+- ~~~Store the images on Rackspace Cloud Files~~~
 
 Simple form:
 
 Exists on `http://localhost:8080/simple-form`
 
 ```
-<form action="/upload" enctype="multipart/form-data" method="post">
+<form action="/upload" method="post">
 	<input name="upload" type="file" />
 	<input type="submit" value="Upload" />
 </form>
@@ -34,7 +30,10 @@ OR
 Through the command-line (Simple way to submit an image through the command-line):
 
 ```bash
-curl -X POST -F upload=@(IMAGE_PATH_HERE) services.tnyu.org:8080/upload
+curl -X POST -F upload=@(IMAGE_PATH_HERE) localhost:8080/upload
 ```
 
-Because of some weird error (because of the proxy) you've to leave the port in. Will try fix this soon.
+Google Code:
+
+`gjslint -r index.js`
+`fixjsstyle index.js`
