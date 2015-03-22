@@ -5,8 +5,9 @@ var app = express();
 var formidable = require('formidable');
 var fs = require('fs-extra');
 var pkgcloud = require('pkgcloud');
-var websitePath = 'http://images.tnyu.org/';
+var util = require('util');
 
+var websitePath = 'http://images.tnyu.org/';
 var rackspace = pkgcloud.storage.createClient({
   provider: 'rackspace',
   username: process.env.RackUN,
@@ -37,7 +38,7 @@ app.use(function(req, res, next) {
     }
 });
 
-var uploadFile = function(fileName, toName) {
+var uploadFile = function(fileName, toName, req, res, temporaryPath, temporaryName, endFilePath) {
   var readStream = fs.createReadStream(fileName);
   var writeStream = rackspace.upload({
     container: 'images',
@@ -49,7 +50,17 @@ var uploadFile = function(fileName, toName) {
   });
 
   writeStream.on('success', function(file) {
-    console.log('done');
+    fs.unlink(temporaryPath, function(err) {
+      if (err) {
+        console.error(err);
+      }
+    });
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+      var filePath = websitePath + endFilePath;
+      res.end(JSON.stringify({
+        'originalName': temporaryName,
+        'filePath': filePath
+    }));
   });
 
   readStream.pipe(writeStream);
@@ -57,25 +68,18 @@ var uploadFile = function(fileName, toName) {
 
 app.post('/upload', function(req, res) {
   var form = new formidable.IncomingForm();
-  form.parse(req, function(err, fields, files) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    var endFilePath = generateFilePath(files.upload.name, files.upload.path);
-    var filePath = websitePath + endFilePath;
-    res.end(JSON.stringify({
-      'originalName': files.upload.name,
-      'filePath': filePath
-    }));
-  });
   form.on('end', function() {
+    var temporaryName = this.openedFiles[0].name;
     var temporaryPath = this.openedFiles[0].path;
-    var endFilePath = generateFilePath(this.openedFiles[0].name, temporaryPath);
-    uploadFile(temporaryPath, endFilePath);
-    fs.unlink(temporaryPath, function(err) {
-      if (err) {
-        console.error(err);
-      }
-    });
+    var endFilePath = generateFilePath(temporaryName, temporaryPath);
+    uploadFile(temporaryPath, endFilePath, req, res, temporaryPath, temporaryName, endFilePath);
   });
+  form.on('error', function(err) {
+    res.writeHead(500, {'content-type': 'text/plain'});
+    res.end('error:\n\n'+util.inspect(err));
+    console.error(err);
+  });
+  form.parse(req);
 });
 
 app.get('/simple-form', function(req, res) {
