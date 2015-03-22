@@ -7,7 +7,7 @@ var fs = require('fs-extra');
 var pkgcloud = require('pkgcloud');
 var util = require('util');
 
-var websitePath = 'http://images.tnyu.org/';
+var websitePath = 'http://files.tnyu.org/';
 var rackspace = pkgcloud.storage.createClient({
   provider: 'rackspace',
   username: process.env.RackUN,
