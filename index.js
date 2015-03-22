@@ -7,12 +7,12 @@ var fs = require('fs-extra');
 var pkgcloud = require('pkgcloud');
 var util = require('util');
 
-var websitePath = 'http://files.tnyu.org/';
+var websitePath = process.env.ImageWebsitePath;
 var rackspace = pkgcloud.storage.createClient({
   provider: 'rackspace',
   username: process.env.RackUN,
   apiKey: process.env.RackAPI,
-  region: 'ORD'
+  region: process.env.RackRegion
 });
 
 // Function to easily generate a file path
@@ -83,16 +83,18 @@ app.post('/upload', function(req, res) {
   form.parse(req);
 });
 
+http://services.tnyu.org:8080/upload
+
 app.get('/simple-form', function(req, res) {
   res.writeHead(200, { 'Content-Type': 'text/html' });
-  var form = '<form action="http://services.tnyu.org:8080/upload" enctype="multipart/form-data" method="post">';
+  var form = '<form action="' + process.env.BasePath + '/upload" method="post">';
   form += '<input name="upload" type="file" /><input type="submit" value="Upload" />';
   form += '</form>';
   res.end(form);
 });
 
 app.get('/', function(req, res) {
-  res.end('Tech@NYU image service');
+  res.end(process.env.ServiceName + ' image service');
 });
 
 app.listen(8080);

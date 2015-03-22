@@ -3,9 +3,18 @@
 Running:
 
 - `sudo npm install`
-- `export RackUN=__`, `export RackAPI=__`, `export RackContainer=__`
+- `export RackUN=__`, `export RackAPI=__`, `export RackContainer=__`, `export ImageWebsitePath=__`, `export ServiceName=__`, `export BasePath=__`
 - `node index.js`
 - `http://localhost:8080`
+
+Details
+
+- RackUN is the Rackspace Username.
+- RackAPI is the Rackspace API key.
+- RackContainer is the Rackspace Container it belongs to.
+- ImageWebsitePath is the CDN URL or some URL where the images can be retrieved from.
+- ServiceName is the name of the service (ours is Tech@NYU).
+- BasePath is the base path where the /simple-form is hosted.
 
 To do:
 
