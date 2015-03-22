@@ -47,7 +47,7 @@ var uploadFile = function(fileName, toName, req, res, temporaryPath, temporaryNa
 
   writeStream.on('error', function(err) {
     res.writeHead(500, {'content-type': 'text/plain'});
-    res.end('error:\n\n'+util.inspect(err));
+    res.end('error:\n\n' + util.inspect(err));
     console.error(err);
   });
 
@@ -78,7 +78,7 @@ app.post('/upload', function(req, res) {
   });
   form.on('error', function(err) {
     res.writeHead(500, {'content-type': 'text/plain'});
-    res.end('error:\n\n'+util.inspect(err));
+    res.end('error:\n\n' + util.inspect(err));
     console.error(err);
   });
   form.parse(req);
