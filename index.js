@@ -46,7 +46,9 @@ var uploadFile = function(fileName, toName, req, res, temporaryPath, temporaryNa
   });
 
   writeStream.on('error', function(err) {
-    console.log(err);
+    res.writeHead(500, {'content-type': 'text/plain'});
+    res.end('error:\n\n'+util.inspect(err));
+    console.error(err);
   });
 
   writeStream.on('success', function(file) {
