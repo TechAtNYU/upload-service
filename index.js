@@ -83,11 +83,9 @@ app.post('/upload', function(req, res) {
   form.parse(req);
 });
 
-http://services.tnyu.org:8080/upload
-
 app.get('/simple-form', function(req, res) {
   res.writeHead(200, { 'Content-Type': 'text/html' });
-  var form = '<form action="' + process.env.BasePath + '/upload" method="post">';
+  var form = '<form action="' + process.env.BasePath + '/upload" enctype="multipart/form-data" method="post">';
   form += '<input name="upload" type="file" /><input type="submit" value="Upload" />';
   form += '</form>';
   res.end(form);
