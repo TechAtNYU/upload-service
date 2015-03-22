@@ -64,7 +64,6 @@ var uploadFile = function(fileName, toName, req, res, temporaryPath, temporaryNa
         'filePath': filePath
     }));
   });
-
   readStream.pipe(writeStream);
 };
 
@@ -86,7 +85,7 @@ app.post('/upload', function(req, res) {
 
 app.get('/simple-form', function(req, res) {
   res.writeHead(200, { 'Content-Type': 'text/html' });
-  var form = '<form action="/upload" enctype="multipart/form-data" method="post">';
+  var form = '<form action="http://services.tnyu.org:8080/upload" enctype="multipart/form-data" method="post">';
   form += '<input name="upload" type="file" /><input type="submit" value="Upload" />';
   form += '</form>';
   res.end(form);
