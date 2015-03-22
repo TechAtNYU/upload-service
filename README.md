@@ -34,5 +34,7 @@ OR
 Through the command-line (Simple way to submit an image through the command-line):
 
 ```bash
-curl -X POST -F upload=@(IMAGE_PATH_HERE) services.tnyu.org/upload
+curl -X POST -F upload=@(IMAGE_PATH_HERE) services.tnyu.org:8080/upload
 ```
+
+Because of some weird error (because of the proxy) you've to leave the port in. Will try fix this soon.
