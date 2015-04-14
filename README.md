@@ -3,7 +3,7 @@
 Running:
 
 - `sudo npm install`
-- `export RackUN=__`, `export RackAPI=__`, `export RackContainer=__`, `export ImageWebsitePath=__`, `export ServiceName=__`, `export BasePath=__`
+- `export RackUN=__`, `export RackAPI=__`, `export RackContainer=__`, `export RackRegion=__`, `export ImageWebsitePath=__`, `export ServiceName=__`, `export BasePath=__`
 - `node index.js`
 - `http://localhost:8080`
 
