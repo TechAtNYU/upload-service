@@ -1,12 +1,12 @@
 'use strict';
 
-var express = require('express');
-var app = express();
-var formidable = require('formidable');
 var fs = require('fs-extra');
-var pkgcloud = require('pkgcloud');
 var util = require('util');
+var express = require('express');
+var formidable = require('formidable');
+var pkgcloud = require('pkgcloud');
 
+var app = express();
 var websitePath = process.env.ImageWebsitePath;
 var rackspace = pkgcloud.storage.createClient({
   provider: 'rackspace',
@@ -16,7 +16,7 @@ var rackspace = pkgcloud.storage.createClient({
 });
 
 // Function to easily generate a file path
-function generateFilePath(uploadName, tmpPath) {
+var generateFilePath = function(uploadName, tmpPath) {
   var folderName = uploadName.split('.')[0];
   var extension = uploadName.split('.')[1];
   var splits = tmpPath.split('/');
@@ -24,25 +24,13 @@ function generateFilePath(uploadName, tmpPath) {
   return tmpPathSplit + '_' + folderName + '.' + extension;
 }
 
-app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-    // intercept OPTIONS method
-    if ('OPTIONS' === req.method) {
-      res.send(200);
-    }
-    else {
-      next();
-    }
-});
-
-var uploadFile = function(fileName, toName, req, res, temporaryPath, temporaryName, endFilePath) {
-  var readStream = fs.createReadStream(fileName);
+// Upload file onto Rackspace
+var uploadFile = function(req, res, temporaryName, temporaryPath) {
+  var endFilePath = generateFilePath(temporaryName, temporaryPath);
+  var readStream = fs.createReadStream(temporaryPath);
   var writeStream = rackspace.upload({
     container: 'images',
-    remote: toName
+    remote: endFilePath
   });
 
   writeStream.on('error', function(err) {
@@ -58,22 +46,35 @@ var uploadFile = function(fileName, toName, req, res, temporaryPath, temporaryNa
       }
     });
     res.writeHead(200, { 'Content-Type': 'application/json' });
-      var filePath = websitePath + endFilePath;
-      res.end(JSON.stringify({
-        'originalName': temporaryName,
-        'filePath': filePath
+    res.end(JSON.stringify({
+      'originalName': temporaryName,
+      'filePath': websitePath + endFilePath
     }));
   });
   readStream.pipe(writeStream);
 };
 
+// Enable CORS
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // intercept OPTIONS method
+  if ('OPTIONS' === req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+});
+
+// Upload route
 app.post('/upload', function(req, res) {
   var form = new formidable.IncomingForm();
   form.on('end', function() {
     var temporaryName = this.openedFiles[0].name;
     var temporaryPath = this.openedFiles[0].path;
-    var endFilePath = generateFilePath(temporaryName, temporaryPath);
-    uploadFile(temporaryPath, endFilePath, req, res, temporaryPath, temporaryName, endFilePath);
+    uploadFile(req, res, temporaryName, temporaryPath);
   });
   form.on('error', function(err) {
     res.writeHead(500, {'content-type': 'text/plain'});
@@ -83,6 +84,7 @@ app.post('/upload', function(req, res) {
   form.parse(req);
 });
 
+// Simple form route
 app.get('/simple-form', function(req, res) {
   res.writeHead(200, { 'Content-Type': 'text/html' });
   var form = '<form action="' + process.env.BasePath + '/upload" enctype="multipart/form-data" method="post">';
