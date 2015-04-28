@@ -22,7 +22,7 @@ var generateFilePath = function(uploadName, tmpPath) {
   var splits = tmpPath.split('/');
   var tmpPathSplit = splits[splits.length - 1];
   return tmpPathSplit + '_' + folderName + '.' + extension;
-}
+};
 
 // Upload file onto Rackspace
 var uploadFile = function(req, res, temporaryName, temporaryPath) {
